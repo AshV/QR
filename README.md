@@ -1,2 +1,2 @@
-# syncLinks
-Sync links and URLs easily while working on multiple devices 
+# No Fuzz QR!
+Just https://github.com/davidshimjs/qrcodejs implementation withiut any fuzz
