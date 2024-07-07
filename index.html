@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <title>No Fuzz QR!</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        img {
+            margin: 0 auto
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1 id="header" style="display:block">No Fuzz QR!</h1>
+        <article id="qrCode" style="display:none;"></article>
+        <form>
+            <fieldset role="group">
+                <input id="btnPaste" type="button" value="📋 Paste Text" />
+                <input id="btnClean" type="button" value="🧹 Cleansify URL" />
+            </fieldset>
+            <fieldset>
+                <textarea onkeyup="onContentChange(this.value)" id="txtContent" placeholder="Enter text or URL to generate QR" aria-label="Text to generate QR"></textarea>
+            </fieldset>
+        </form>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
+    <script>
+        let header = document.querySelector("#header");
+        let qrCode = document.querySelector("#qrCode");
+        let qrGen = new QRCode(qrCode, {
+            text: "No Fuzz QR!",
+            // width: 251,
+            // height: 251,
+            colorDark: "#0172ad",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        function onContentChange(txt) {
+            if (txt.length === 0) {
+                header.style.display = "block";
+                qrCode.style.display = "none";
+            } else {
+                qrGen.makeCode(txt);
+                qrCode.style.display = "block";
+                header.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
