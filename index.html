@@ -23,7 +23,7 @@
                 <input id="btnClean" type="button" value="🧹 Cleansify URL" />
             </fieldset>
             <fieldset>
-                <textarea onkeyup="onContentChange(this.value)" id="txtContent" placeholder="Enter text or URL to generate QR" aria-label="Text to generate QR"></textarea>
+                <textarea onkeyup="onContentChange()" id="txtContent" placeholder="Enter text or URL to generate QR" aria-label="Text to generate QR"></textarea>
             </fieldset>
         </form>
     </main>
@@ -32,6 +32,8 @@
     <script>
         let header = document.querySelector("#header");
         let qrCode = document.querySelector("#qrCode");
+        let pasteButton = document.querySelector('#btnPaste');
+        let txtContent = document.querySelector('#txtContent');
         let qrGen = new QRCode(qrCode, {
             text: "No Fuzz QR!",
             // width: 251,
@@ -41,12 +43,27 @@
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        function onContentChange(txt) {
-            if (txt.length === 0) {
+        pasteButton.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText()
+                document.querySelector('textarea').value += text;
+                console.log('Text pasted.');
+            } catch (error) {
+                console.log('Failed to read clipboard. Using execCommand instead.');
+                document.querySelector('textarea').focus();
+                const result = document.execCommand('paste')
+                console.log('document.execCommand result: ', result);
+            }
+            onContentChange();
+        });
+
+        function onContentChange() {
+
+            if (txtContent.value.length === 0) {
                 header.style.display = "block";
                 qrCode.style.display = "none";
             } else {
-                qrGen.makeCode(txt);
+                qrGen.makeCode(txtContent.value);
                 qrCode.style.display = "block";
                 header.style.display = "none";
             }
