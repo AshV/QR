@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="max-age=251000" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark" />
@@ -19,8 +20,9 @@
         <article id="qrCode" style="display:none;"></article>
         <form>
             <fieldset role="group">
-                <input id="btnPaste" type="button" value="📋 Paste Text" />
-                <input id="btnClean" type="button" value="🧹 Cleansify URL" />
+                <input id="btnPaste" onclick="onPaste()" type="button" value="📋 Paste" />
+                <input id="btnClean" onclick="removeTrackingParams()" type="button" value="🧹 Cleansify" />
+                <input id="btnRemove" onclick="onRemove()" type="button" value="🗑️ Remove" />
             </fieldset>
             <fieldset>
                 <textarea onkeyup="onContentChange()" id="txtContent" placeholder="Enter text or URL to generate QR" aria-label="Text to generate QR"></textarea>
@@ -33,6 +35,7 @@
         let header = document.querySelector("#header");
         let qrCode = document.querySelector("#qrCode");
         let pasteButton = document.querySelector('#btnPaste');
+        let removeButton = document.querySelector('#btnRemove');
         let txtContent = document.querySelector('#txtContent');
         let qrGen = new QRCode(qrCode, {
             text: "No Fuzz QR!",
@@ -42,23 +45,75 @@
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
+        let trackingParams = [
+            "ScCid",
+            "_branch_match_id",
+            "_bta_c",
+            "_bta_tid",
+            "_ga",
+            "_gl",
+            "_ke",
+            "_kx",
+            "campid",
+            "customid",
+            "dclid",
+            "dm_i",
+            "ef_id",
+            "epik",
+            "fbclid",
+            "gbraid",
+            "gclid",
+            "gclsrc",
+            "gdffi",
+            "gdfms",
+            "gdftrk",
+            "hsa_*",
+            "igshid",
+            "irclickid",
+            "matomo_*mc_cid",
+            "mc_eid",
+            "mkcid",
+            "mkevt",
+            "mkrid",
+            "mkwid",
+            "msclkid",
+            "mtm_*",
+            "ndclid",
+            "pcrid",
+            "piwik_*",
+            "pk_*",
+            "redirect_log_mongo_id",
+            "redirect_mongo_id",
+            "rtid",
+            "s_kwcid",
+            "sb_referer_host",
+            "si",
+            "sms_*",
+            "sms_uph",
+            "toolid",
+            "trk_*",
+            "ttclid",
+            "twclid",
+            "utm_*",
+            "wbraid",
+            "yclid",
+            "s"
+        ]
 
-        pasteButton.addEventListener('click', async () => {
+        async function onPaste() {
             try {
-                const text = await navigator.clipboard.readText()
+                txtContent.value = "";
+                const text = await navigator.clipboard.readText();
                 document.querySelector('textarea').value += text;
-                console.log('Text pasted.');
             } catch (error) {
                 console.log('Failed to read clipboard. Using execCommand instead.');
                 document.querySelector('textarea').focus();
-                const result = document.execCommand('paste')
-                console.log('document.execCommand result: ', result);
+                const result = document.execCommand('paste');
             }
             onContentChange();
-        });
+        }
 
         function onContentChange() {
-
             if (txtContent.value.length === 0) {
                 header.style.display = "block";
                 qrCode.style.display = "none";
@@ -67,6 +122,29 @@
                 qrCode.style.display = "block";
                 header.style.display = "none";
             }
+        }
+
+        function removeTrackingParams() {
+            if (txtContent.value.length === 0) return;
+
+            let url = new URL(txtContent.value);
+            const paramsToRemove = new Set([...trackingParams]);
+            const paramsToRemoveRegex = new RegExp(Array.from(paramsToRemove).join("|"));
+            const params = new URLSearchParams(url.search.replace(/amp;/g, "&"));
+
+            params.forEach((_, key) => {
+                if (paramsToRemoveRegex.test(key)) {
+                    url.searchParams.delete(key)
+                }
+            });
+
+            txtContent.value = url;
+            onContentChange();
+        }
+
+        function onRemove() {
+            txtContent.value = "";
+            onContentChange();
         }
     </script>
 </body>
