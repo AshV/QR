@@ -4,8 +4,8 @@
     <meta http-equiv="Cache-Control" content="max-age=251000" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <meta name="color-scheme" content="light" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css" />
     <title>No Fuzz QR!</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
@@ -15,14 +15,14 @@
     </style>
 </head>
 <body>
-    <main class="container">
+    <main>
         <h1 id="header" style="display:block">No Fuzz QR!</h1>
         <article id="qrCode" style="display:none;"></article>
         <form>
             <fieldset role="group">
-                <input id="btnPaste" onclick="onPaste()" type="button" value="📋 Paste" />
-                <input id="btnClean" onclick="removeTrackingParams()" type="button" value="🧹 Cleansify" />
-                <input id="btnRemove" onclick="onRemove()" type="button" value="🗑️ Remove" />
+                <input id="btnPaste" onclick="onPaste()" type="button" value="📋Paste" data-tooltip="Paste from Clipboard" />
+                <input id="btnClean" onclick="removeTrackingParams()" type="button" value="🧹Clean" data-tooltip="Cleanisify URL" />
+                <input id="btnRemove" onclick="onRemove()" type="button" value="🗑️Erase" data-tooltip="Erase" />
             </fieldset>
             <fieldset>
                 <textarea onkeyup="onContentChange()" id="txtContent" placeholder="Enter text or URL to generate QR" aria-label="Text to generate QR"></textarea>
