@@ -1,35 +1,38 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta http-equiv="Cache-Control" content="max-age=251000" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css" />
     <title>No Fuzz QR!</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        img {
-            margin: 0 auto
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-    <main>
-        <h1 id="header" style="display:block">No Fuzz QR!</h1>
+    <main class="card">
+        <h1 id="header">No Fuzz QR!</h1>
         <article id="qrCode" style="display:none;"></article>
+
         <form>
-            <fieldset role="group">
-                <input id="btnPaste" onclick="onPaste()" type="button" value="📋Paste" data-tooltip="Paste from Clipboard" />
-                <input id="btnClean" onclick="removeTrackingParams()" type="button" value="🧹Clean" data-tooltip="Cleanisify URL" />
-                <input id="btnRemove" onclick="onRemove()" type="button" value="🗑️Erase" data-tooltip="Erase" />
-            </fieldset>
-            <fieldset>
-                <textarea onkeyup="onContentChange()" id="txtContent" placeholder="Enter text or URL to generate QR" aria-label="Text to generate QR"></textarea>
-            </fieldset>
+            <div class="control-group">
+                <input id="btnPaste" onclick="onPaste()" type="button" value="📋 Paste" title="Paste from Clipboard" />
+                <input id="btnClean" onclick="removeTrackingParams()" type="button" value="🧹 Clean"
+                    title="Cleanisify URL" />
+                <input id="btnRemove" onclick="onRemove()" type="button" value="🗑️ Erase" title="Erase" />
+            </div>
+            <div class="input-wrapper">
+                <textarea onkeyup="onContentChange()" id="txtContent" placeholder="Enter text or URL to generate QR..."
+                    aria-label="Text to generate QR"></textarea>
+            </div>
         </form>
     </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
     <script>
         let header = document.querySelector("#header");
@@ -39,86 +42,49 @@
         let txtContent = document.querySelector('#txtContent');
         let qrGen = new QRCode(qrCode, {
             text: "No Fuzz QR!",
-            // width: 251,
-            // height: 251,
-            colorDark: "#0172ad",
+            colorDark: "#6366f1", // Updated to match primary color
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
+
         let trackingParams = [
-            "ScCid",
-            "_branch_match_id",
-            "_bta_c",
-            "_bta_tid",
-            "_ga",
-            "_gl",
-            "_ke",
-            "_kx",
-            "campid",
-            "customid",
-            "dclid",
-            "dm_i",
-            "ef_id",
-            "epik",
-            "fbclid",
-            "gbraid",
-            "gclid",
-            "gclsrc",
-            "gdffi",
-            "gdfms",
-            "gdftrk",
-            "hsa_*",
-            "igshid",
-            "irclickid",
-            "matomo_*mc_cid",
-            "mc_eid",
-            "mkcid",
-            "mkevt",
-            "mkrid",
-            "mkwid",
-            "msclkid",
-            "mtm_*",
-            "ndclid",
-            "pcrid",
-            "piwik_*",
-            "pk_*",
-            "redirect_log_mongo_id",
-            "redirect_mongo_id",
-            "rtid",
-            "s_kwcid",
-            "sb_referer_host",
-            "si",
-            "sms_*",
-            "sms_uph",
-            "toolid",
-            "trk_*",
-            "ttclid",
-            "twclid",
-            "utm_*",
-            "wbraid",
-            "yclid",
-            "s"
-        ]
+            "ScCid", "_branch_match_id", "_bta_c", "_bta_tid", "_ga", "_gl", "_ke", "_kx",
+            "campid", "customid", "dclid", "dm_i", "ef_id", "epik", "fbclid", "gbraid",
+            "gclid", "gclsrc", "gdffi", "gdfms", "gdftrk", "hsa_*", "igshid", "irclickid",
+            "matomo_*mc_cid", "mc_eid", "mkcid", "mkevt", "mkrid", "mkwid", "msclkid",
+            "mtm_*", "ndclid", "pcrid", "piwik_*", "pk_*", "redirect_log_mongo_id",
+            "redirect_mongo_id", "rtid", "s_kwcid", "sb_referer_host", "si", "sms_*",
+            "sms_uph", "toolid", "trk_*", "ttclid", "twclid", "utm_*", "wbraid", "yclid", "s"
+        ];
 
         async function onPaste() {
             try {
                 txtContent.value = "";
                 const text = await navigator.clipboard.readText();
-                document.querySelector('textarea').value += text;
+                txtContent.value = text; // Fixed direct assignment
             } catch (error) {
                 console.log('Failed to read clipboard. Using execCommand instead.');
-                document.querySelector('textarea').focus();
-                const result = document.execCommand('paste');
+                txtContent.focus();
+                document.execCommand('paste');
             }
             onContentChange();
         }
 
         function onContentChange() {
-            if (txtContent.value.length === 0) {
+            const val = txtContent.value.trim();
+            if (val.length === 0) {
                 header.style.display = "block";
                 qrCode.style.display = "none";
             } else {
-                qrGen.makeCode(txtContent.value);
+                qrCode.innerHTML = ""; // Clear previous QR
+                qrGen = new QRCode(qrCode, {
+                    text: val,
+                    width: 256,
+                    height: 256,
+                    colorDark: "#6366f1", // Using --primary color
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
                 qrCode.style.display = "block";
                 header.style.display = "none";
             }
@@ -127,19 +93,31 @@
         function removeTrackingParams() {
             if (txtContent.value.length === 0) return;
 
-            let url = new URL(txtContent.value);
-            const paramsToRemove = new Set([...trackingParams]);
-            const paramsToRemoveRegex = new RegExp(Array.from(paramsToRemove).join("|"));
-            const params = new URLSearchParams(url.search.replace(/amp;/g, "&"));
+            try {
+                let url = new URL(txtContent.value);
+                const paramsToRemove = new Set([...trackingParams]);
+                // Simplified regex creation (naive, but works for the list provided)
+                const paramsToRemoveRegex = new RegExp("^(" + Array.from(paramsToRemove).join("|").replace(/\*/g, ".*") + ")$");
 
-            params.forEach((_, key) => {
-                if (paramsToRemoveRegex.test(key)) {
-                    url.searchParams.delete(key)
-                }
-            });
+                // Need to iterate securely
+                const keysToDelete = [];
+                url.searchParams.forEach((_, key) => {
+                    if (trackingParams.some(p => {
+                        const regex = new RegExp("^" + p.replace("*", ".*") + "$");
+                        return regex.test(key);
+                    })) {
+                        keysToDelete.push(key);
+                    }
+                });
 
-            txtContent.value = url;
-            onContentChange();
+                keysToDelete.forEach(k => url.searchParams.delete(k));
+
+                txtContent.value = url.toString();
+                onContentChange();
+            } catch (e) {
+                // Not a valid URL, ignore
+                console.log("Not a valid URL for cleaning");
+            }
         }
 
         function onRemove() {
@@ -147,5 +125,7 @@
             onContentChange();
         }
     </script>
+    <script src="background.js"></script>
 </body>
+
 </html>
